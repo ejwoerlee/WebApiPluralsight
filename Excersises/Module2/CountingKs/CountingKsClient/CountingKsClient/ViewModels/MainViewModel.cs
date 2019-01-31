@@ -41,7 +41,7 @@ namespace CountingKsClient.ViewModels
                 webClient.Headers["Accept"] = "application/json";
                 
                 //webClient.UseDefaultCredentials = false;
-                //webClient.Credentials = new NetworkCredential("egbert-jan.woerlee@cgm.com", "???");
+                //webClient.Credentials = new NetworkCredential("myname@mydomain", "???");
                 //string authInfo = "name:pass";
                 //authInfo = Convert.ToBase64String(Encoding.Default.GetBytes(authInfo));
                 //webClient.Headers["Authorization"] = "Basic " + authInfo;
