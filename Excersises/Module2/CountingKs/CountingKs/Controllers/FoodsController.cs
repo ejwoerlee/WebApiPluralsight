@@ -7,6 +7,7 @@ using System.Web.Http;
 using System.Web.WebSockets;
 using CountingKs.Data;
 using CountingKs.Data.Entities;
+using WebGrease;
 
 namespace CountingKs.Controllers
 {
@@ -21,12 +22,19 @@ namespace CountingKs.Controllers
 
         }
 
-        [Authorize]
-        public IEnumerable<Food> Get()
+        //[Authorize]
+        public IEnumerable<object> Get()
         {
-            var results = _repo.GetAllFoods()
-                               .OrderBy(f => f.Description)
-                               .Take(25);
+            var results = _repo.GetAllFoodsWithMeasures()
+                .OrderBy(f => f.Description)
+                .Take(25)
+                .ToList()
+                .Select(f => new
+                {
+                    Description = f.Description,
+                    Measures = f.Measures.Select(m => new { Description = m.Description, Calories = m.Calories})
+                });
+            
             return results;
         }
     }
