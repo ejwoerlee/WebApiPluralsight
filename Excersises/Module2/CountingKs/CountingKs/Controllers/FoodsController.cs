@@ -7,6 +7,7 @@ using System.Web.Http;
 using System.Web.WebSockets;
 using CountingKs.Data;
 using CountingKs.Data.Entities;
+using CountingKs.Models;
 using WebGrease;
 
 namespace CountingKs.Controllers
@@ -15,27 +16,39 @@ namespace CountingKs.Controllers
     public class FoodsController : ApiController
     {
         private ICountingKsRepository _repo;
+        private ModelFactory _modelFactory;
 
         public FoodsController(ICountingKsRepository repo)
         {
             _repo = repo;
-
+            _modelFactory = new ModelFactory();
         }
 
         //[Authorize]
-        public IEnumerable<object> Get()
+        public IEnumerable<FoodModel> Get(bool includeMeasures = true)
         {
-            var results = _repo.GetAllFoodsWithMeasures()
-                .OrderBy(f => f.Description)
+            IQueryable<Food> query;
+
+            if (includeMeasures)
+            {
+                query = _repo.GetAllFoodsWithMeasures();
+            }
+            else
+            {
+                query = _repo.GetAllFoods();
+            }
+
+            var results = query.OrderBy(f => f.Description)
                 .Take(25)
                 .ToList()
-                .Select(f => new
-                {
-                    Description = f.Description,
-                    Measures = f.Measures.Select(m => new { Description = m.Description, Calories = m.Calories})
-                });
-            
+                .Select(f => _modelFactory.Create(f));
+           
             return results;
+        }
+
+        public FoodModel Get(int id)
+        {
+            return _modelFactory.Create(_repo.GetFood(id));
         }
     }
 }

@@ -11,11 +11,24 @@ namespace CountingKs
   {
     public static void Register(HttpConfiguration config)
     {
-      config.Routes.MapHttpRoute(
-          name: "DefaultApi",
-          routeTemplate: "api/{controller}/{id}",
-          defaults: new { id = RouteParameter.Optional }
-      );
+            // {controller} niet in routeTemplate, daarom  in defaults
+            // new { controller = "Foods" ..
+            // letop de naam van een paramater id Get en Post functions van de controller
+            // is nu letterlijk 'id'. dus get (int -> id <-)
+            config.Routes.MapHttpRoute(
+                name: "Food",
+                routeTemplate: "api/nutrition/foods/{id}",
+                defaults: new {controller = "foods", id = RouteParameter.Optional, includeMeasures = RouteParameter.Optional}  //,
+                //constraints: new { id = "/d+" }
+            );
+
+            //>> niet gebruiken: bijvoorbeeld 'per ongeluk' api beschikbaar maken..
+            //config.Routes.MapHttpRoute(
+            //    name: "DefaultApi",
+            //    routeTemplate: "api/{controller}/{id}",
+            //    defaults: new {id = RouteParameter.Optional}
+            //);
+            //<<
 
       // Uncomment the following line of code to enable query support for actions with an IQueryable or IQueryable<T> return type.
       // To avoid processing unexpected or malicious queries, use the validation settings on QueryableAttribute to validate incoming queries.
