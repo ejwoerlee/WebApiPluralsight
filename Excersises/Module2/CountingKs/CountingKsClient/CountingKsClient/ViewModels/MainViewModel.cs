@@ -16,7 +16,7 @@ namespace CountingKsClient.ViewModels
         // Basic Authentication In WebAPI -> https://www.c-sharpcorner.com/blogs/basic-authentication-in-webapi
         //https://docs.microsoft.com/en-us/aspnet/web-api/overview/mobile-clients/calling-web-api-from-a-windows-phone-8-application#STEP2
 
-        const string apiUrl = @"http://localhost/CountingKs/Api/Foods";
+        const string apiUrl = @"http://localhost:52525/CountingKs/Api/Foods";
 
         /// <summary>
         /// A collection for ItemViewModel objects.

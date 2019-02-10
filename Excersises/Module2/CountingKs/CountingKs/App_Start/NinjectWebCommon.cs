@@ -1,5 +1,6 @@
 using System.Web.Http;
 using CountingKs.Data;
+using CountingKs.Services;
 using WebGrease.Configuration;
 
 [assembly: WebActivatorEx.PreApplicationStartMethod(typeof(CountingKs.App_Start.NinjectWebCommon), "Start")]
@@ -71,7 +72,7 @@ namespace CountingKs.App_Start
         {
             kernel.Bind<ICountingKsRepository>().To<CountingKsRepository>();
             kernel.Bind<CountingKsContext>().To<CountingKsContext>();
-
+            kernel.Bind<ICountingKsIdentityService>().To <CountingKsIdentityService>();
         }        
     }
 }
