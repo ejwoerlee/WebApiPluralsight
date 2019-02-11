@@ -28,7 +28,7 @@ namespace CountingKs
                routeTemplate: "api/nutrition/foods/{foodid}/measures/{id}",
                defaults: new
                {
-                 controller = "measures",
+                 controller = "Measures",
                  id = RouteParameter.Optional
                } 
               );
@@ -42,6 +42,13 @@ namespace CountingKs
                    diaryid = RouteParameter.Optional
                }
               );
+
+              config.Routes.MapHttpRoute(
+               name: "DiaryEntries",
+               routeTemplate: "api/user/diaries/{diaryid}/entries/{id}",
+               defaults: new {controller = "diaryentries", id = RouteParameter.Optional}
+              );
+
 
             //>> niet gebruiken: bijvoorbeeld 'per ongeluk' api beschikbaar maken..
             //config.Routes.MapHttpRoute(
