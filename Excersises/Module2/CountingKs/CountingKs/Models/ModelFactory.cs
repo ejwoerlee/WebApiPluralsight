@@ -4,16 +4,19 @@ using System.Linq;
 using System.Net.Http;
 using System.Web;
 using System.Web.Http.Routing;
+using CountingKs.Data;
 using CountingKs.Data.Entities;
 
 namespace CountingKs.Models
 {
     public class ModelFactory
     {
+        private ICountingKsRepository _repository;
         private UrlHelper _urlHelper;
 
-        public ModelFactory(HttpRequestMessage request)
+        public ModelFactory(HttpRequestMessage request, ICountingKsRepository repository)
         {
+            _repository = repository;
             _urlHelper = new UrlHelper(request);
         }
         public FoodModel Create(Food food)
@@ -58,5 +61,29 @@ namespace CountingKs.Models
             };
         }
 
+        public DiaryEntry Parse(DiaryEntryModel model)
+        {
+            try
+            {
+                var entry = new DiaryEntry();
+                if (model.Quantity != default(double))
+                {
+                    entry.Quantity = model.Quantity;
+                }
+
+                var uri = new Uri(model.MeasureUrl);
+                var measeId = int.Parse(uri.Segments.Last());
+                var measure = _repository.GetMeasure((measeId));
+
+                entry.Measure = measure;
+                entry.FoodItem = measure.Food;
+
+                return entry;
+            }
+            catch
+            {
+                return null;
+            }
+        }
     }
 }

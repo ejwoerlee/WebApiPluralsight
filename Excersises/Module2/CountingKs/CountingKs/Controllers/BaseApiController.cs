@@ -29,8 +29,9 @@ namespace CountingKs.Controllers
         {
             get
             {
-                if (_modelFactory == null) {
-                    _modelFactory = new ModelFactory(this.Request);
+                if (_modelFactory == null)
+                {
+                    _modelFactory = new ModelFactory(this.Request, TheRepository);
                 }
 
                 return _modelFactory;
