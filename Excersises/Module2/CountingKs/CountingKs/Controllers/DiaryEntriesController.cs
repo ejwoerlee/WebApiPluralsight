@@ -37,78 +37,80 @@ namespace CountingKs.Controllers
         {
             var result = TheRepository.GetDiaryEntry(_identityService.CurrentUser, diaryId.Date, id);
 
-            if (result == null)
-            {
+            if (result == null) {
                 return Request.CreateResponse(HttpStatusCode.NotFound);
             }
 
             return Request.CreateResponse(HttpStatusCode.OK, TheModelFactory.Create(result));
         }
 
-        public HttpResponseMessage Post(DateTime diaryId, [FromBody]DiaryEntryModel model)
+        public HttpResponseMessage Post(DateTime diaryId, [FromBody] DiaryEntryModel model)
         {
-            try
-            {
+            try {
                 var entity = TheModelFactory.Parse(model);
-                if (entity == null)
-                {
+                if (entity == null) {
                     Request.CreateResponse(HttpStatusCode.BadRequest, "could not read diary entry in body");
                 }
 
                 var diary = TheRepository.GetDiary(_identityService.CurrentUser, diaryId);
-                if (diary == null)
-                {
+                if (diary == null) {
                     Request.CreateResponse(HttpStatusCode.NotFound);
                 }
 
-                if (diary.Entries.Any(e => e.Measure.Id == entity.Measure.Id))
-                {
+                if (diary.Entries.Any(e => e.Measure.Id == entity.Measure.Id)) {
                     return Request.CreateResponse(HttpStatusCode.BadRequest, "duplicate measure not allowed");
                 }
 
                 diary.Entries.Add(entity);
-                if (TheRepository.SaveAll())
-                {
+                if (TheRepository.SaveAll()) {
                     return Request.CreateResponse(HttpStatusCode.Created, TheModelFactory.Create(entity));
-                }
-                else
-                {
+                } else {
                     return Request.CreateResponse(HttpStatusCode.BadRequest, "Error saving record to the database.");
                 }
 
 
 
             }
-            catch (Exception ex)
-            {
+            catch (Exception ex) {
                 return Request.CreateResponse(HttpStatusCode.BadRequest, ex);
-            } 
+            }
         }
 
         public HttpResponseMessage Delete(DateTime diaryId, int id)
         {
-            try
-            {
-                if (TheRepository.GetDiaryEntries(_identityService.CurrentUser, diaryId).Any(e => e.Id == id) == false)
-                {
+            try {
+                if (TheRepository.GetDiaryEntries(_identityService.CurrentUser, diaryId)
+                                 .Any(e => e.Id == id) == false) {
                     return Request.CreateResponse(HttpStatusCode.NotFound);
                 }
 
-                if (TheRepository.DeleteDiaryEntry(id) && TheRepository.SaveAll())
-                {
+                if (TheRepository.DeleteDiaryEntry(id) && TheRepository.SaveAll()) {
+                    return Request.CreateResponse(HttpStatusCode.OK);
+                } else {
                     return Request.CreateResponse(HttpStatusCode.OK);
                 }
-                else
-                {
-                   return Request.CreateResponse(HttpStatusCode.OK);
-                }
             }
-            catch (Exception e)
-            {
+            catch (Exception e) {
                 return Request.CreateResponse(HttpStatusCode.BadRequest, e);
             }
-
         }
 
+        public HttpResponseMessage Patch(DateTime diaryId, int id, [FromBody] DiaryEntryModel model)
+        {
+            try {
+                var entity = TheRepository.GetDiaryEntry(_identityService.CurrentUser, diaryId, id);
+                if (entity == null) {
+                    return Request.CreateResponse(HttpStatusCode.NotFound);
+                }
+
+            }
+
+
+            catch (Exception e) {
+                return Request.CreateResponse(HttpStatusCode.BadRequest, e);
+            }
+        }
     }
+
+
 }
