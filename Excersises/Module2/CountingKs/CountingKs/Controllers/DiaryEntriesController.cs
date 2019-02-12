@@ -76,16 +76,38 @@ namespace CountingKs.Controllers
                     return Request.CreateResponse(HttpStatusCode.BadRequest, "Error saving record to the database.");
                 }
 
-                
+
 
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 return Request.CreateResponse(HttpStatusCode.BadRequest, ex);
+            } 
+        }
+
+        public HttpResponseMessage Delete(DateTime diaryId, int id)
+        {
+            try
+            {
+                if (TheRepository.GetDiaryEntries(_identityService.CurrentUser, diaryId).Any(e => e.Id == id) == false)
+                {
+                    return Request.CreateResponse(HttpStatusCode.NotFound);
+                }
+
+                if (TheRepository.DeleteDiaryEntry(id) && TheRepository.SaveAll())
+                {
+                    return Request.CreateResponse(HttpStatusCode.OK);
+                }
+                else
+                {
+                   return Request.CreateResponse(HttpStatusCode.OK);
+                }
+            }
+            catch (Exception e)
+            {
+                return Request.CreateResponse(HttpStatusCode.BadRequest, e);
             }
 
-
-            
         }
 
     }
