@@ -32,16 +32,16 @@ namespace CountingKs.Controllers
             return results;
         }
 
-        public HttpResponseMessage Get(DateTime diaryId)
+        public IHttpActionResult Get(DateTime diaryId)
         {
             var username = _identityService.CurrentUser;
             var result = TheRepository.GetDiary(username, diaryId);
             if (result == null) {
-                return Request.CreateResponse(HttpStatusCode.NotFound);
+                // return Request.CreateResponse(HttpStatusCode.NotFound);
+                return Content(HttpStatusCode.NotFound, "Foo does not exist.");
             }
 
-            return Request.CreateResponse(HttpStatusCode.OK,
-                                          TheModelFactory.Create(result));
+            return Ok(TheModelFactory.Create(result));
 
         }
     }
