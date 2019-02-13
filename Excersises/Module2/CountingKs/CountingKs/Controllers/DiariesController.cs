@@ -32,6 +32,7 @@ namespace CountingKs.Controllers
             return results;
         }
 
+        // ipv HttpResponseMessage. IHttpActionResult geeft json terug..
         public IHttpActionResult Get(DateTime diaryId)
         {
             var username = _identityService.CurrentUser;
@@ -40,7 +41,8 @@ namespace CountingKs.Controllers
                 // return Request.CreateResponse(HttpStatusCode.NotFound);
                 return Content(HttpStatusCode.NotFound, "Foo does not exist.");
             }
-
+            
+            // return Request.CreateResponse(HttpStatusCode.OK, result);
             return Ok(TheModelFactory.Create(result));
 
         }
