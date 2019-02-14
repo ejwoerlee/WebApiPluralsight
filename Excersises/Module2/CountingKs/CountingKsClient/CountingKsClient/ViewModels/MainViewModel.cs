@@ -59,8 +59,7 @@ namespace CountingKsClient.ViewModels
                 this.Items.Clear();
                 if (e.Result != null)
                 {
-                    var foods = JsonConvert.DeserializeObject<Food[]>(e.Result);
-                    int id = 0;
+                    var foods = JsonConvert.DeserializeObject<Food[]>(e.Result);                   
                     foreach (Food food in foods)
                     {
                         this.Items.Add(new Food()

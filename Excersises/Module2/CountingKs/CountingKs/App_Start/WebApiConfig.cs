@@ -4,6 +4,7 @@ using System.Linq;
 using System.Net.Http.Formatting;
 using System.Net.Http.Headers;
 using System.Web.Http;
+using CountingKs.Filters;
 using Newtonsoft.Json.Serialization;
 
 namespace CountingKs
@@ -50,6 +51,14 @@ namespace CountingKs
               );
 
 
+            config.Routes.MapHttpRoute(
+                name: "DiarySummary",
+                routeTemplate: "api/user/diaries/{diaryid}/summary",
+                defaults: 
+                new { controller = "diarysummary" }
+            );
+
+
             //>> niet gebruiken: bijvoorbeeld 'per ongeluk' api beschikbaar maken..
             //config.Routes.MapHttpRoute(
             //    name: "DefaultApi",
@@ -63,12 +72,13 @@ namespace CountingKs
             // For more information, visit http://go.microsoft.com/fwlink/?LinkId=279712.
             //config.EnableQuerySupport();
 
-            var jsonFormatter = config.Formatters.OfType<JsonMediaTypeFormatter>()
-            .FirstOrDefault();
-        jsonFormatter.SerializerSettings.ContractResolver = new CamelCasePropertyNamesContractResolver();
+            config.Formatters.JsonFormatter.SupportedMediaTypes.Add(new MediaTypeHeaderValue("text/html"));
 
+            var jsonFormatter = config.Formatters.OfType<JsonMediaTypeFormatter>().FirstOrDefault();
+            jsonFormatter.SerializerSettings.ContractResolver = new CamelCasePropertyNamesContractResolver();
 
-
+            // Forece HTTPS on entire API
+            config.Filters.Add(new RequireHttpsAttribute());
     }
   }
 }
