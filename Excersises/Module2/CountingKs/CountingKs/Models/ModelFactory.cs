@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
 using System.Web;
+using System.Web.Http;
 using System.Web.Http.Routing;
 using CountingKs.Data;
 using CountingKs.Data.Entities;
@@ -61,6 +62,31 @@ namespace CountingKs.Models
             };
         }
 
+        public Diary Parse(DiaryModel model)
+        {
+            try {
+                var entity = new Diary();
+
+                if (!string.IsNullOrWhiteSpace(model.Url)) {
+                    var uri = new Uri(model.Url);
+                    entity.Id = int.Parse(uri.Segments.Last());
+                }
+
+                entity.CurrentDate = model.CurrentDate;
+
+                if (model.Entries != null) {
+                    foreach (var entry in model.Entries)
+                        entity.Entries.Add(Parse(entry));
+                }
+
+                return entity;
+            } catch {
+                return null;
+            }
+        }
+
+
+
         public DiaryEntry Parse(DiaryEntryModel model)
         {
             try
@@ -71,12 +97,15 @@ namespace CountingKs.Models
                     entry.Quantity = model.Quantity;
                 }
 
-                var uri = new Uri(model.MeasureUrl);
-                var measeId = int.Parse(uri.Segments.Last());
-                var measure = _repository.GetMeasure((measeId));
+                if (!string.IsNullOrWhiteSpace(model.MeasureUrl))
+                {
+                    var uri = new Uri(model.MeasureUrl);
+                    var measeId = int.Parse(uri.Segments.Last());
+                    var measure = _repository.GetMeasure((measeId));
 
-                entry.Measure = measure;
-                entry.FoodItem = measure.Food;
+                    entry.Measure = measure;
+                    entry.FoodItem = measure.Food;
+                }
 
                 return entry;
             }
@@ -84,6 +113,15 @@ namespace CountingKs.Models
             {
                 return null;
             }
+        }
+
+        public DiarySummaryModel CreateSummary(Diary diary)
+        {
+            return new DiarySummaryModel()
+            {
+                DiaryDate = diary.CurrentDate,
+                TotalCalories = Math.Round(diary.Entries.Sum(e => e.Measure.Calories * e.Quantity))
+            };
         }
     }
 }

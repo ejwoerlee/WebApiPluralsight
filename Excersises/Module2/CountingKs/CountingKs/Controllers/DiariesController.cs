@@ -32,17 +32,57 @@ namespace CountingKs.Controllers
             return results;
         }
 
-        public HttpResponseMessage Get(DateTime diaryId)
+        // ipv HttpResponseMessage. IHttpActionResult geeft json terug..
+        public IHttpActionResult Get(DateTime diaryId)
         {
             var username = _identityService.CurrentUser;
             var result = TheRepository.GetDiary(username, diaryId);
             if (result == null) {
-                return Request.CreateResponse(HttpStatusCode.NotFound);
+                // return Request.CreateResponse(HttpStatusCode.NotFound);
+                return Content(HttpStatusCode.NotFound, "Foo does not exist.");
+            }
+            
+            // return Request.CreateResponse(HttpStatusCode.OK, result);
+            return Ok(TheModelFactory.Create(result));
+        }
+
+        public HttpResponseMessage Post([FromBody] DiaryModel model)
+        {
+            try {
+                if (TheRepository.GetDiaries(_identityService.CurrentUser).Count(d => d.CurrentDate == model.CurrentDate.Date) > 0) {
+                    return Request.CreateErrorResponse(HttpStatusCode.Conflict, "A diary already exists for that date");
+                }
+
+                var entity = TheModelFactory.Parse(model);
+                entity.UserName = _identityService.CurrentUser;
+
+                if (TheRepository.Insert(entity) && TheRepository.SaveAll()) {
+                    return Request.CreateResponse(HttpStatusCode.Created, TheModelFactory.Create(entity));
+                }
+            } catch {
+                // TODO Add Logging
             }
 
-            return Request.CreateResponse(HttpStatusCode.OK,
-                                          TheModelFactory.Create(result));
-
+            return Request.CreateResponse(HttpStatusCode.BadRequest);
         }
+
+        public HttpResponseMessage Delete(DateTime id)
+        {
+            try {
+                var entity = TheRepository.GetDiary(_identityService.CurrentUser, id);
+                if (entity == null) {
+                    return Request.CreateResponse(HttpStatusCode.NotFound);
+                }
+
+                if (TheRepository.DeleteDiary(entity.Id) && TheRepository.SaveAll()) {
+                    return Request.CreateResponse(HttpStatusCode.OK);
+                }
+            } catch {
+                // TODO Add Logging
+            }
+
+            return Request.CreateResponse(HttpStatusCode.BadRequest);
+        }
+
     }
 }
