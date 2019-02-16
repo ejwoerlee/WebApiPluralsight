@@ -9,6 +9,7 @@ using CountingKs.Data;
 using CountingKs.Data.Entities;
 
 
+
 namespace CountingKs.Models
 {
     public class ModelFactory
