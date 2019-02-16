@@ -9,6 +9,5 @@ namespace CountingKs.Models
     {
         public DateTime DiaryDate { get; set; }
         public double TotalCalories { get; set; }
-        
     }
 }
