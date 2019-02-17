@@ -11,6 +11,7 @@ using CountingKs.Services;
 
 namespace CountingKs.Controllers
 {
+    // [EnableCors]
     public class DiariesController : BaseApiController
     {
         private ICountingKsIdentityService _identityService;
@@ -21,6 +22,7 @@ namespace CountingKs.Controllers
             _identityService = identityService;
         }
 
+        //[DisableCors]
         public IEnumerable<DiaryModel> Get()
         {
             var username = _identityService.CurrentUser;
