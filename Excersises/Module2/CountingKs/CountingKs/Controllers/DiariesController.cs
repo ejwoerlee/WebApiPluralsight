@@ -6,12 +6,14 @@ using System.Net.Http;
 using System.Threading;
 using System.Web.Http;
 using CountingKs.Data;
+using CountingKs.Filters;
 using CountingKs.Models;
 using CountingKs.Services;
 
 namespace CountingKs.Controllers
 {
     // [EnableCors]
+    [CountingKsAuthorize]
     public class DiariesController : BaseApiController
     {
         private ICountingKsIdentityService _identityService;
