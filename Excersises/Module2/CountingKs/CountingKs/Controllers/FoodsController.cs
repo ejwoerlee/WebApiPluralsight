@@ -10,12 +10,13 @@ using System.Web.Http.Routing;
 using System.Web.WebSockets;
 using CountingKs.Data;
 using CountingKs.Data.Entities;
+using CountingKs.Filters;
 using CountingKs.Models;
 using WebGrease;
 
 namespace CountingKs.Controllers
 {
-    
+    [CountingKsAuthorize(false)]
     public class FoodsController : BaseApiController
     {
         private const int PAGE_SIZE = 2; // 2 items ;-(

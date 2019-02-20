@@ -14,7 +14,8 @@ namespace CountingKs.Controllers
     public class TokenController : BaseApiController
     {
         public TokenController(ICountingKsRepository repo): base(repo)
-        {            
+        {   
+            
         }
 
         public HttpResponseMessage Post([FromBody] TokenRequestModel model)
