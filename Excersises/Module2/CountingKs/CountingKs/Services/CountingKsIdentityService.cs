@@ -18,8 +18,11 @@ namespace CountingKs.Services
         {
             get
             {
-                // return "shawnwildermuth2";
-                return Thread.CurrentPrincipal.Identity.Name;
+                #if DEBUG
+                    return "shawnwildermuth2";
+                #else
+                    return Thread.CurrentPrincipal.Identity.Name;
+                #endif
             }
         }
     }

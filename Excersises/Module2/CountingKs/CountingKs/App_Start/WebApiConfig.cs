@@ -10,7 +10,10 @@ using WebApiContrib.Formatting.Jsonp;
 
 namespace CountingKs
 {
-  public static class WebApiConfig
+    using System.Web.Http.Dispatcher;
+    using Services;
+
+    public static class WebApiConfig
   {
       public static void Register(HttpConfiguration config)
       {
@@ -84,25 +87,29 @@ namespace CountingKs
             // For more information, visit http://go.microsoft.com/fwlink/?LinkId=279712.
             //config.EnableQuerySupport();
 
-            config.Formatters.JsonFormatter.SupportedMediaTypes.Add(new MediaTypeHeaderValue("text/html"));
+            //config.Formatters.JsonFormatter.SupportedMediaTypes.Add(new MediaTypeHeaderValue("text/html"));
 
-          var jsonFormatter = config.Formatters.OfType<JsonMediaTypeFormatter>().FirstOrDefault();
-          jsonFormatter.SerializerSettings.ContractResolver = new CamelCasePropertyNamesContractResolver();
+            var jsonFormatter = config.Formatters.OfType<JsonMediaTypeFormatter>().FirstOrDefault();
+            jsonFormatter.SerializerSettings.ContractResolver = new CamelCasePropertyNamesContractResolver();
 
 #if !DEBUG
 // Forece HTTPS on entire API
           config.Filters.Add(new RequireHttpsAttribute());
 #endif
-          // Add support for JSONP
-          // var formatter = new JsonpMediaTypeFormatter(jsonFormatter, "cb");
-          // config.Formatters.Insert(0, formatter);
+            // Add support for JSONP
+            // var formatter = new JsonpMediaTypeFormatter(jsonFormatter, "cb");
+            // config.Formatters.Insert(0, formatter);
 
-          
-          // Support CORS on the entire API
-          // config.EnableCors(new EnableCorsAttribute);
-          
-          // Support CORS per method call
-          // config.EnableCors();
+
+            // Support CORS on the entire API
+            // config.EnableCors(new EnableCorsAttribute);
+
+            // Support CORS per method call
+            // config.EnableCors();
+
+            // Replace the Controller Configuration
+            config.Services.Replace(typeof(IHttpControllerSelector),
+              new CountingKsControllerSelector(config));
 
       }
   }
