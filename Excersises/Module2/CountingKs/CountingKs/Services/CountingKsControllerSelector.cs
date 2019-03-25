@@ -6,6 +6,7 @@ using System.Web;
 namespace CountingKs.Services
 {
     using System.Net.Http;
+    using System.Text.RegularExpressions;
     using System.Web.Http;
     using System.Web.Http.Controllers;
     using System.Web.Http.Dispatcher;
@@ -30,8 +31,11 @@ namespace CountingKs.Services
 
             if (controllers.TryGetValue(controllerName, out HttpControllerDescriptor descriptor))
             {
+                // VERSION API
                 // string version = GetVersionFromQueryString(request);
-                string version = GetVersionFromHeader(request);
+                // string version = GetVersionFromHeader(request);
+                // string version = GetVersionFromAcceptHeader(request);
+                string version = GetVersionFromMediaType(request);
 
                 var newName = string.Concat(controllerName, "V", version);
                
@@ -44,6 +48,37 @@ namespace CountingKs.Services
             }
 
             return null;
+        }
+
+        private string GetVersionFromMediaType(HttpRequestMessage request)
+        {
+            var accept = request.Headers.Accept;
+            var ex = new Regex(@"application\/vnd\.countingks\.([a-z]+)\.v([0-9]+)\+json", RegexOptions.IgnoreCase);
+            foreach (var mime in accept)
+            {
+                var match = ex.Match(mime.MediaType);
+                if (match != null)
+                {
+                    return match.Groups[2].Value;
+                }
+            }
+
+            return "1";
+        }
+
+        private string GetVersionFromAcceptHeader(HttpRequestMessage request)
+        {
+            var accept = request.Headers.Accept;
+            foreach (var mime in accept)
+            {
+                if (mime.MediaType == "application/json")
+                {
+                    //var value = mime.Parameters.Where(v => v.Name.Equals("version", StringComparison.OrdinalIgnoreCase)).FirstOrDefault();
+                    var value = mime.Parameters.FirstOrDefault(v => v.Name.Equals("version", StringComparison.OrdinalIgnoreCase));
+                    return value.Value;
+                }               
+            }
+            return "1";
         }
 
         private string GetVersionFromHeader(HttpRequestMessage request)

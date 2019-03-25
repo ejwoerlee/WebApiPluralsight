@@ -91,6 +91,9 @@ namespace CountingKs
 
             var jsonFormatter = config.Formatters.OfType<JsonMediaTypeFormatter>().FirstOrDefault();
             jsonFormatter.SerializerSettings.ContractResolver = new CamelCasePropertyNamesContractResolver();
+            CreateMediaTypes(jsonFormatter);
+
+
 
 #if !DEBUG
 // Forece HTTPS on entire API
@@ -111,6 +114,23 @@ namespace CountingKs
             config.Services.Replace(typeof(IHttpControllerSelector),
               new CountingKsControllerSelector(config));
 
+      }
+
+      private static void CreateMediaTypes(JsonMediaTypeFormatter jsonFormatter)
+      {
+          var mediaTypes = new String[]
+          {
+              "application/vnd.countingks.food.v1+json",
+              "application/vnd.countingks.measure.v1+json",
+              "application/vnd.countingks.measure.v2+json",
+              "application/vnd.countingks.diary.v1+json",
+              "application/vnd.countingks.diaryEntry.v1+json",
+          };
+          foreach (var mediaType in mediaTypes)
+          {
+              jsonFormatter.SupportedMediaTypes.Add(new MediaTypeHeaderValue(mediaType));
+
+          }
       }
   }
 }
