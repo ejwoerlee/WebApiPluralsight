@@ -36,7 +36,9 @@ namespace CountingKs.Models
         {
             return new MeasureModel()
             {
-                Url = _urlHelper.Link("Food", new { foodid = measure.Food.Id,  id = measure.Id }),
+                Url = _urlHelper.Link("Measures", new { foodid = measure.Food.Id, id = measure.Id }),
+                // Met onderstaande constructie wordt automatisch de url parameter ?v=2 aan de link toegevoegd:
+                // Url = _urlHelper.Link("Measures", new { foodid = measure.Food.Id,  id = measure.Id, v = 2 }),
                 Description = measure.Description,
                 Calories = Math.Round(measure.Calories)
             };
@@ -45,7 +47,7 @@ namespace CountingKs.Models
         public MeasureV2Model Create2(Measure measure)
         {
             return new MeasureV2Model() {
-                Url = _urlHelper.Link("Measures", new { foodid = measure.Food.Id, id = measure.Id }),
+                Url = _urlHelper.Link("Measures", new { foodid = measure.Food.Id, id = measure.Id}),
                 Description = measure.Description,
                 Calories = Math.Round(measure.Calories),
                 TotalFat =  measure.TotalFat,

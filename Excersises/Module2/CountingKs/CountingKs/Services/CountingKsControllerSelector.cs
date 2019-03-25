@@ -30,7 +30,8 @@ namespace CountingKs.Services
 
             if (controllers.TryGetValue(controllerName, out HttpControllerDescriptor descriptor))
             {
-                string version = "2";
+                // string version = GetVersionFromQueryString(request);
+                string version = GetVersionFromHeader(request);
 
                 var newName = string.Concat(controllerName, "V", version);
                
@@ -43,6 +44,34 @@ namespace CountingKs.Services
             }
 
             return null;
+        }
+
+        private string GetVersionFromHeader(HttpRequestMessage request)
+        {
+            const string HEADER_NAME = "X-CountingKs-Version";
+
+            if (request.Headers.Contains(HEADER_NAME))
+            {
+                var header = request.Headers.GetValues(HEADER_NAME).FirstOrDefault();
+                if (header != null)
+                {
+                    return header;
+                }
+            }
+
+            return "1";
+        }
+
+        private string GetVersionFromQueryString(HttpRequestMessage request)
+        {
+            var query = HttpUtility.ParseQueryString((request.RequestUri.Query));
+            var version = query["v"];
+            if (version != null)
+            {
+                return version;
+            }
+
+            return "1";
         }
     }
 }

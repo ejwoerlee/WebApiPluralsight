@@ -34,7 +34,7 @@ namespace CountingKs
           );
 
           config.Routes.MapHttpRoute(
-              name: "Meaures",
+              name: "Measures",
               routeTemplate: "api/nutrition/foods/{foodid}/measures/{id}",
               defaults: new
               {
