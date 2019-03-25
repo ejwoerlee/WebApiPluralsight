@@ -10,7 +10,10 @@ using WebApiContrib.Formatting.Jsonp;
 
 namespace CountingKs
 {
+    using System.Configuration;
     using System.Web.Http.Dispatcher;
+    using CacheCow.Common;
+    using CacheCow.Server.EntityTagStore.SqlServer;
     using Services;
 
     public static class WebApiConfig
@@ -91,6 +94,8 @@ namespace CountingKs
 
             var jsonFormatter = config.Formatters.OfType<JsonMediaTypeFormatter>().FirstOrDefault();
             jsonFormatter.SerializerSettings.ContractResolver = new CamelCasePropertyNamesContractResolver();
+
+            // Versioning
             CreateMediaTypes(jsonFormatter);
 
 
@@ -110,10 +115,20 @@ namespace CountingKs
             // Support CORS per method call
             // config.EnableCors();
 
-            // Replace the Controller Configuration
+            // Replace the Controller Configuration (versioning)
             config.Services.Replace(typeof(IHttpControllerSelector),
               new CountingKsControllerSelector(config));
 
+            // Configure Caching/ETag Support
+            var connString = ConfigurationManager.ConnectionStrings["DefaultConnection"].ConnectionString;
+            var etagStore = new SqlServerEntityTagStore(connString);            
+            var cacheHandler = new CacheCow.Server.CachingHandler(config, etagStore);
+
+
+            // cacheHandler.AddLastModifiedHeader = true;
+            // cacheHandler.CacheControlHeaderProvider = etc etc
+            // cacheHandler.CacheRefreshPolicyProvider = etc etc.
+            config.MessageHandlers.Add(cacheHandler);
       }
 
       private static void CreateMediaTypes(JsonMediaTypeFormatter jsonFormatter)
