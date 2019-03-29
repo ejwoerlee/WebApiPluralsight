@@ -224,6 +224,7 @@
     <Compile Include="Models\DiaryModel.cs" />
     <Compile Include="Models\DiarySummaryModel.cs" />
     <Compile Include="Models\FoodModel.cs" />
+    <Compile Include="Models\LinkModel.cs" />
     <Compile Include="Models\MeasureV2Model.cs" />
     <Compile Include="Models\MeasureModel.cs" />
     <Compile Include="Models\ModelFactory.cs" />

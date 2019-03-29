@@ -65,11 +65,31 @@ namespace CountingKs.Models
 
         public DiaryModel Create(Diary diary)
         {
+            var rel = _urlHelper.Link("Diaries", new { diaryid = diary.CurrentDate.ToString("yyyy-MM-dd") });
+
             return new DiaryModel()
             {
-                Url = _urlHelper.Link("Diaries", new { diaryid = diary.CurrentDate.ToString("yyyy-MM-dd") }),
+                
+
+                Links = new List<LinkModel>()
+                {
+                    CreateLink("Diaries", rel, "self")
+                        
+                },
+               // Url = _urlHelper.Link("Diaries", new { diaryid = diary.CurrentDate.ToString("yyyy-MM-dd") }),
                 CurrentDate = diary.CurrentDate,
                 Entries = diary.Entries.Select(e => Create(e))
+            };
+        }
+
+        public LinkModel CreateLink(string href, string rel, string method = "GET", bool isTemplated = false)
+        {
+            return new LinkModel()
+            {
+                Href = href,
+                Rel = rel,
+                Method = method,
+                IsTemplated = isTemplated
             };
         }
 
