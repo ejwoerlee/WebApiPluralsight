@@ -7,11 +7,15 @@ using System.Web.Http;
 
 namespace CountingKs.Controllers
 {
+    using System.Web.Http.Cors;
     using System.Xml.Schema;
     using Data;
 
+    // [EnableCors("*", "X-OURAPP", "")] // force including a header in my application
+    // [EnableCors("*", "*", "*")] // all operations allowed
 
     [RoutePrefix("api/stats")]
+    // [EnableCors("*", "*", "GET")]
     public class StatsController : BaseApiController
     {
         public StatsController(ICountingKsRepository repo): base(repo)
@@ -20,6 +24,7 @@ namespace CountingKs.Controllers
         }
 
         [Route("")]
+        //[DisableCors()]
         public HttpResponseMessage Get()
         {
             var results = new
@@ -31,7 +36,8 @@ namespace CountingKs.Controllers
             return Request.CreateResponse(results);
         }
 
-        [Route("{id}")]
+        // gebruik het ~teken voor een uitzondering op de standaard route..
+        [Route("~/api/stat/{id:int}")]
         public HttpResponseMessage Get(int id)
         {
             if (id == 1)
@@ -45,6 +51,22 @@ namespace CountingKs.Controllers
             }
 
             
+            return Request.CreateResponse(HttpStatusCode.NotFound);
+        }
+
+        // Route attribute constaints: {name:<constaint>}
+        [Route("~/api/stat/{name:alpha}")]
+        public HttpResponseMessage Get(string name)
+        {
+            if (name == "foods") {
+                return Request.CreateResponse(new { NumFoods = TheRepository.GetAllFoods().Count() });
+            }
+
+            if (name == "users") {
+                return Request.CreateResponse(new { NumApiUsers = TheRepository.GetApiUsers().Count() });
+            }
+
+
             return Request.CreateResponse(HttpStatusCode.NotFound);
         }
     }

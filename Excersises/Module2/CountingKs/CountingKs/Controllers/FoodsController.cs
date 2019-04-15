@@ -17,6 +17,7 @@ using WebGrease;
 namespace CountingKs.Controllers
 {
     [CountingKsAuthorize(false)]
+    [RoutePrefix("api/nutrition/foods")]
     public class FoodsController : BaseApiController
     {
         private const int PAGE_SIZE = 2; // 2 items ;-(
@@ -25,6 +26,7 @@ namespace CountingKs.Controllers
         }
 
         //[Authorize]
+        [Route("", Name="Foods")]
         public IHttpActionResult Get(bool includeMeasures = true, int page = 0)
         {
             IQueryable<Food> query;
@@ -43,8 +45,8 @@ namespace CountingKs.Controllers
             var totalPages = Math.Ceiling((double)totalCount / PAGE_SIZE);
 
             var helper = new UrlHelper(Request);
-            var prevUrl = page > 0 ? helper.Link("Food", new {page = page - 1}) : "";
-            var nextUrl = page < totalPages - 1 ? helper.Link("Food", new { page = page + 1 }) : "";
+            var prevUrl = page > 0 ? helper.Link("Foods", new {page = page - 1}) : "";
+            var nextUrl = page < totalPages - 1 ? helper.Link("Foods", new { page = page + 1 }) : "";
 
             var results = baseQuery.Skip(PAGE_SIZE * page)
                                   .Take(PAGE_SIZE)
@@ -62,9 +64,11 @@ namespace CountingKs.Controllers
             );
         }
 
-        public FoodModel Get(int id)
+        //Named route (Food) in WebApi2
+        [Route("{foodid}", Name="Food")]
+        public FoodModel Get(int foodid)
         {
-            return TheModelFactory.Create(TheRepository.GetFood(id));
+            return TheModelFactory.Create(TheRepository.GetFood(foodid));
         }
     }
 }

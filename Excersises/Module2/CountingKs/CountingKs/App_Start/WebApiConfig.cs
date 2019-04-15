@@ -11,6 +11,7 @@ using WebApiContrib.Formatting.Jsonp;
 namespace CountingKs
 {
     using System.Configuration;
+    using System.Web.Http.Cors;
     using System.Web.Http.Dispatcher;
     using CacheCow.Common;
     using CacheCow.Server.EntityTagStore.SqlServer;
@@ -28,17 +29,18 @@ namespace CountingKs
           // new { controller = "Foods" ..
           // letop de naam van een paramater id Get en Post functions van de controller
           // is nu letterlijk 'id'. dus get (int -> id <-)
-          config.Routes.MapHttpRoute(
-              name: "Food",
-              routeTemplate: "api/nutrition/foods/{id}",
-              defaults: new
-              {
-                  controller = "foods",
-                  id = RouteParameter.Optional,
-                  includeMeasures = RouteParameter.Optional
-              } //,
-              //constraints: new { id = "/d+" }
-          );
+
+          //config.Routes.MapHttpRoute(
+          //    name: "Food",
+          //    routeTemplate: "api/nutrition/foods/{id}",
+          //    defaults: new
+          //    {
+          //        controller = "foods",
+          //        id = RouteParameter.Optional,
+          //        includeMeasures = RouteParameter.Optional
+          //    } //,
+          //    //constraints: new { id = "/d+" }
+          //);
 
           config.Routes.MapHttpRoute(
               name: "Measures",
@@ -120,8 +122,8 @@ namespace CountingKs
             // config.EnableCors();
 
             // Replace the Controller Configuration (versioning)
-//!!            config.Services.Replace(typeof(IHttpControllerSelector),
-//!!              new CountingKsControllerSelector(config));
+            config.Services.Replace(typeof(IHttpControllerSelector),
+            new CountingKsControllerSelector(config));
 
             // Configure Caching/ETag Support
             var connString = ConfigurationManager.ConnectionStrings["DefaultConnection"].ConnectionString;
@@ -133,6 +135,13 @@ namespace CountingKs
             // cacheHandler.CacheControlHeaderProvider = etc etc
             // cacheHandler.CacheRefreshPolicyProvider = etc etc.
             config.MessageHandlers.Add(cacheHandler);
+
+            // Add support CORS
+            // Allowing other websites to call into this webapi
+            // By default it expects calls only from calls from this api or from a non-website
+            // like a mobile app are going to be supported.
+            var attr = new EnableCorsAttribute("*", "*", "GET");
+            config.EnableCors(attr);
       }
 
       private static void CreateMediaTypes(JsonMediaTypeFormatter jsonFormatter)

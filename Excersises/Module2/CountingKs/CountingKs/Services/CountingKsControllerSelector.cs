@@ -29,7 +29,11 @@ namespace CountingKs.Services
 
             var controllerName = (string) routeData.Values["controller"];
 
-            if (controllers.TryGetValue(controllerName, out HttpControllerDescriptor descriptor))
+            if (string.IsNullOrWhiteSpace(controllerName))
+            {
+                return base.SelectController(request);
+            }
+            else if (controllers.TryGetValue(controllerName, out HttpControllerDescriptor descriptor))
             {
                 // VERSION API
                 // string version = GetVersionFromQueryString(request);
@@ -80,7 +84,7 @@ namespace CountingKs.Services
             }
             return "1";
         }
-
+        
         private string GetVersionFromHeader(HttpRequestMessage request)
         {
             const string HEADER_NAME = "X-CountingKs-Version";
