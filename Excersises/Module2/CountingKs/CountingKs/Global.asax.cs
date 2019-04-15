@@ -18,7 +18,7 @@ namespace CountingKs
     {
       AreaRegistration.RegisterAllAreas();
 
-      GlobalConfiguration.Configure(WebApiConfig.Register);
+      GlobalConfiguration.Configure(WebApiConfig.Register); // webapi 2 version
       FilterConfig.RegisterGlobalFilters(GlobalFilters.Filters);
       RouteConfig.RegisterRoutes(RouteTable.Routes);
       BundleConfig.RegisterBundles(BundleTable.Bundles);

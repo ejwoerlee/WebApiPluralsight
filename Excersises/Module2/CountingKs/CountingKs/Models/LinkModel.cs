@@ -11,7 +11,5 @@ namespace CountingKs.Models
         public string Rel { get; set; }
         public string Method { get; set; }
         public bool IsTemplated { get; set; }
-
-
     }
 }

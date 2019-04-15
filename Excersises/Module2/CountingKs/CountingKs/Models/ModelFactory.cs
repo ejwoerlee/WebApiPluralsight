@@ -66,15 +66,15 @@ namespace CountingKs.Models
         public DiaryModel Create(Diary diary)
         {
             var rel = _urlHelper.Link("Diaries", new { diaryid = diary.CurrentDate.ToString("yyyy-MM-dd") });
+            var rel2 = _urlHelper.Link("Diaries", new { diaryid = diary.CurrentDate.ToString("yyyy-MM-dd") });
 
             return new DiaryModel()
-            {
-                
-
+            {                
                 Links = new List<LinkModel>()
                 {
-                    CreateLink("Diaries", rel, "self")
-                        
+                    CreateLink("Diaries", rel, "GET"),
+                    CreateLink("Diaries", rel2, "POST")
+
                 },
                // Url = _urlHelper.Link("Diaries", new { diaryid = diary.CurrentDate.ToString("yyyy-MM-dd") }),
                 CurrentDate = diary.CurrentDate,
@@ -110,8 +110,9 @@ namespace CountingKs.Models
             try {
                 var entity = new Diary();
 
-                if (!string.IsNullOrWhiteSpace(model.Url)) {
-                    var uri = new Uri(model.Url);
+                var selfLink = model.Links.Where(l => l.Rel == "self").FirstOrDefault();
+                if (selfLink != null && !string.IsNullOrWhiteSpace(selfLink.Href)) {
+                    var uri = new Uri(selfLink.Href);
                     entity.Id = int.Parse(uri.Segments.Last());
                 }
 

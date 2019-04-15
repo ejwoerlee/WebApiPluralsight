@@ -20,6 +20,10 @@ namespace CountingKs
   {
       public static void Register(HttpConfiguration config)
       {
+        //>>> Zelf toevoegen om met Route attributes in controllers te werken!
+         config.MapHttpAttributeRoutes();
+        //<<<
+
           // {controller} niet in routeTemplate, daarom  in defaults
           // new { controller = "Foods" ..
           // letop de naam van een paramater id Get en Post functions van de controller
@@ -116,8 +120,8 @@ namespace CountingKs
             // config.EnableCors();
 
             // Replace the Controller Configuration (versioning)
-            config.Services.Replace(typeof(IHttpControllerSelector),
-              new CountingKsControllerSelector(config));
+//!!            config.Services.Replace(typeof(IHttpControllerSelector),
+//!!              new CountingKsControllerSelector(config));
 
             // Configure Caching/ETag Support
             var connString = ConfigurationManager.ConnectionStrings["DefaultConnection"].ConnectionString;
