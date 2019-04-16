@@ -65,10 +65,18 @@ namespace CountingKs.Controllers
         }
 
         //Named route (Food) in WebApi2
-        [Route("{foodid}", Name="Food")]
-        public FoodModel Get(int foodid)
+        //[Route("{foodid}", Name="Food")]
+        //public FoodModel Get(int foodid)
+        //{
+        //    return TheModelFactory.Create(TheRepository.GetFood(foodid));
+        //}
+
+       // Named route(Food) in WebApi2
+        [Route("{foodid}", Name = "Food")]
+        public IHttpActionResult Get(int foodid)
         {
-            return TheModelFactory.Create(TheRepository.GetFood(foodid));
+            return Versioned(TheModelFactory.Create(TheRepository.GetFood(foodid)));
         }
+
     }
 }

@@ -23,51 +23,98 @@ namespace CountingKs.Controllers
             
         }
 
+        //[Route("")]
+        ////[DisableCors()]
+        //public HttpResponseMessage Get()
+        //{
+        //    var results = new
+        //    {
+        //        NumFoods = TheRepository.GetAllFoods().Count(),
+        //        NumUsers = TheRepository.GetApiUsers().Count()
+        //    };
+
+        //    return Request.CreateResponse(results);
+        //}
+
+        // web api 2 versie
         [Route("")]
         //[DisableCors()]
-        public HttpResponseMessage Get()
+        public IHttpActionResult Get()
         {
-            var results = new
-            {
+            var results = new {
                 NumFoods = TheRepository.GetAllFoods().Count(),
                 NumUsers = TheRepository.GetApiUsers().Count()
             };
 
-            return Request.CreateResponse(results);
+            return Ok(results);
         }
 
         // gebruik het ~teken voor een uitzondering op de standaard route..
+        //[Route("~/api/stat/{id:int}")]
+        //public HttpResponseMessage Get(int id)
+        //{
+        //    if (id == 1)
+        //    {
+        //        return Request.CreateResponse(new {NumFoods = TheRepository.GetAllFoods().Count()});
+        //    }
+
+        //    if (id == 2)
+        //    {
+        //        return Request.CreateResponse(new { NumApiUsers = TheRepository.GetApiUsers().Count() });
+        //    }
+
+
+        //    return Request.CreateResponse(HttpStatusCode.NotFound);
+        //}
+
+       // gebruik het ~teken voor een uitzondering op de standaard route..
+
         [Route("~/api/stat/{id:int}")]
-        public HttpResponseMessage Get(int id)
+        public IHttpActionResult Get(int id)
         {
-            if (id == 1)
-            {
-                return Request.CreateResponse(new {NumFoods = TheRepository.GetAllFoods().Count()});
+            if (id == 1) {
+                return Ok(new { NumFoods = TheRepository.GetAllFoods().Count() });
             }
 
-            if (id == 2)
-            {
-                return Request.CreateResponse(new { NumApiUsers = TheRepository.GetApiUsers().Count() });
+            if (id == 2) {
+                return Ok(new { NumApiUsers = TheRepository.GetApiUsers().Count() });
             }
 
-            
-            return Request.CreateResponse(HttpStatusCode.NotFound);
+
+            return NotFound();
         }
 
+
+
         // Route attribute constaints: {name:<constaint>}
+        //[Route("~/api/stat/{name:alpha}")]
+        //public HttpResponseMessage Get(string name)
+        //{
+        //    if (name == "foods") {
+        //        return Request.CreateResponse(new { NumFoods = TheRepository.GetAllFoods().Count() });
+        //    }
+
+        //    if (name == "users") {
+        //        return Request.CreateResponse(new { NumApiUsers = TheRepository.GetApiUsers().Count() });
+        //    }
+
+
+        //    return Request.CreateResponse(HttpStatusCode.NotFound);
+        //}
+
         [Route("~/api/stat/{name:alpha}")]
-        public HttpResponseMessage Get(string name)
+        public IHttpActionResult Get(string name)
         {
             if (name == "foods") {
-                return Request.CreateResponse(new { NumFoods = TheRepository.GetAllFoods().Count() });
+                Ok(new { NumFoods = TheRepository.GetAllFoods().Count() });
             }
 
             if (name == "users") {
-                return Request.CreateResponse(new { NumApiUsers = TheRepository.GetApiUsers().Count() });
+                Ok(new { NumApiUsers = TheRepository.GetApiUsers().Count() });
             }
 
 
-            return Request.CreateResponse(HttpStatusCode.NotFound);
+            return NotFound();
         }
     }
 
